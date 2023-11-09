@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% load static %}
+
+{% block title %} Order List {% endblock title %}
+
+
+{% block content %}
+
+<style>
+    #wrap {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .btn-slide2 {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        position: relative;
+        height: 40px;
+        width: 160px;
+        line-height: 40px;
+        padding: 0;
+        border-radius: 50px;
+        background: #fdfdfd;
+        border: 2px solid #0099cc;
+        margin: 10px;
+        transition: .5s;
+    }
+
+    .btn-slide2 {
+        border: 2px solid #efa666;
+    }
+
+    .btn-slide2:hover {
+        background-color: #efa666;
+    }
+
+    .btn-slide2:hover span.circle2 {
+        left: 100%;
+        margin-left: -35px;
+        background-color: #fdfdfd;
+        color: #0099cc;
+    }
+
+    .btn-slide2:hover span.circle2 {
+        color: #efa666;
+    }
+
+    .btn-slide2:hover span.title2 {
+        left: 30px;
+        opacity: 0;
+    }
+
+    .btn-slide2:hover span.title-hover2 {
+        opacity: 1;
+        left: 30px;
+    }
+
+    .btn-slide2 span.circle2 {
+        display: block;
+        background-color: #0099cc;
+        color: #fff;
+        position: absolute;
+        float: left;
+        margin: 2px;
+        line-height: 30px;
+        height: 30px;
+        width: 30px;
+        top: 0;
+        left: 0;
+        transition: .5s;
+        border-radius: 50%;
+    }
+
+    .btn-slide2 span.circle2 {
+        background-color: #efa666;
+        font-size: 20px;
+    }
+
+    .btn-slide2 span.title2,
+    .btn-slide2 span.title-hover2 {
+        position: absolute;
+        left: 50px;
+        text-align: center;
+        margin: 0 auto;
+        font-size: 14px;
+        font-weight: bold;
+        color: #30abd5;
+        transition: .5s;
+    }
+
+    .btn-slide2 span.title2,
+    .btn-slide2 span.title-hover2 {
+        color: #efa666;
+        left: 30px;
+    }
+
+    .btn-slide2 span.circle2 i {
+        transform: scale(0.4);
+        position: absolute;
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .btn-slide2 span.title-hover2 {
+        left: 30px;
+        opacity: 0;
+    }
+
+    .btn-slide2 span.title-hover2 {
+        color: #fff;
+    }
+    #fixed-row {
+        position: fixed;
+        top: 0;
+        left: 20%;
+        width: 80%;
+        background-color: #fff; /* Add a background color if needed */
+        z-index: 999; /* Add a higher z-index to ensure it stays on top of other elements */
+        padding: 10px;
+    }
+    .modal {
+        /* Update the z-index to 1050 or higher */
+        z-index: 1050;
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Modal Content */
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+    
+    /* Close Button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .action-icons-td {
+        align-items: center;
+    }
+</style>
+    
+    <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+        <div class="col-md-5">Orders List</div>
+        <div id="wrap">
+            <a href="{% url 'export_orders' %}" class="btn-slide2">
+                <span class="circle2"><i class="fa fa-download fa-sm"></i></span>
+                <span class="title2">Download</span>
+                <span class="title-hover2">Click here</span>
+            </a>
+        </div>
+        <div class="col-md-4">         
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'new-sale' %}">Create New Order</a> </div>
+        </div>
+    </div>
+    
+    <br>
+
+    <table class="table table-css table-bordered table-hover"> 
+            
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th>Reference</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Material</th>
+                <th>Quantity</th>
+                <th>Price KES</th>
+                <th>Date</th>
+                <th width="13%">Actions</th>
+            </tr>
+        </thead>
+
+{% if bills %}
+
+        <tbody>
+            {% for sale in bills %}
+            <tr><!-- Log on to codeastro.com for more projects -->
+                <td class="align-middle"> <p>{{ sale.billno }}</p> </td>
+                <td class="customer-link">{{ sale.name }}<br> <small style="color: #909494">Ph No : {{ sale.phone }}</small> </td>
+                <td class="align-middle">{% for item in sale.get_items_list %} {{ item.product }} <br> {% endfor %}</td>
+                <td class="align-middle">{% for item in sale.get_items_list %} {{ item.stock.name }} <br> {% endfor %}</td>
+                <td class="align-middle">{% for item in sale.get_items_list %} {{ item.pqty }} <br> {% endfor %}</td>     
+                <td class="align-middle">{{ sale.get_total_price }}</td>
+                <td class="align-middle">{{ sale.time.date }}</td>
+                <td class="action-icons-td" style="width: 30px"> 
+                    <a href="{% url 'sale-bill' sale.billno %}" class="btn btn-secondary btn-sm action-icon-button" title="View Quotation">
+                        <i class="bi bi-eye-fill"></i>
+                    </a> 
+                    <a href="{% url 'delete-sale' sale.pk %}" class="btn btn-danger btn-sm action-icon-button" title="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                        </svg>
+                    </a>
+                    <span class="btn btn-primary btn-sm action-icon-button" onclick="openQuotationModal('{{ sale.pk }}')" data-toggle="modal" data-target="#quotationModal" title="Send Downloaded Quotation">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                        </svg>
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    <div class="align-middle"><!-- Log on to codeastro.com for more projects -->
+        {% if is_paginated %}
+
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% else %}
+
+        <tbody></tbody>  <!-- Log on to codeastro.com for more projects --> 
+    </table>
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+
+{% endif %}
+
+<div class="modal fade" id="quotationModal" tabindex="-1" role="dialog" aria-labelledby="quotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quotationModalLabel">JEILO COLLECTIONS: QUOTATION</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'send_quotation_email' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Add a hidden input field to store the sale ID -->
+                    <input type="hidden" id="saleIdInput" name="sale_id">
+        
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea class="form-control" id="message" name="message" rows="2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">Upload the Quotation:</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
+<script type="text/javascript">
+    // Function to open the modal and pass the sale ID to the modal
+    function openQuotationModal(saleId) {
+        // Get the modal element
+        var modal = document.getElementById("quotationModal");
+
+        // Set the value of the hidden input field to the sale ID
+        document.getElementById("saleIdInput").value = saleId;
+
+        // Open the modal
+        modal.style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        // Get the modal element
+        var modal = document.getElementById("quotationModal");
+        
+        // Close the modal
+        modal.style.display = "none";
+    }
+
+    // Event listener to close the modal when the close button is clicked
+    var closeBtn = document.querySelector("#quotationModal .close");
+    closeBtn.addEventListener("click", closeModal);
+
+    // Event listener to close the modal when clicking outside the modal content
+    window.addEventListener("click", function (event) {
+        var modal = document.getElementById("quotationModal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+</script>
+
+{% endblock content %}

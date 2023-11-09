@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+
+{% block title %} Material List {% endblock title %}
+
+
+{% block content %}
+
+<style>
+    #wrap {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .btn-slide2 {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        position: relative;
+        height: 40px;
+        width: 160px;
+        line-height: 40px;
+        padding: 0;
+        border-radius: 50px;
+        background: #fdfdfd;
+        border: 2px solid #0099cc;
+        margin: 10px;
+        transition: .5s;
+    }
+
+    .btn-slide2 {
+        border: 2px solid #efa666;
+    }
+
+    .btn-slide2:hover {
+        background-color: #efa666;
+    }
+
+    .btn-slide2:hover span.circle2 {
+        left: 100%;
+        margin-left: -35px;
+        background-color: #fdfdfd;
+        color: #0099cc;
+    }
+
+    .btn-slide2:hover span.circle2 {
+        color: #efa666;
+    }
+
+    .btn-slide2:hover span.title2 {
+        left: 30px;
+        opacity: 0;
+    }
+
+    .btn-slide2:hover span.title-hover2 {
+        opacity: 1;
+        left: 30px;
+    }
+
+    .btn-slide2 span.circle2 {
+        display: block;
+        background-color: #0099cc;
+        color: #fff;
+        position: absolute;
+        float: left;
+        margin: 2px;
+        line-height: 30px;
+        height: 30px;
+        width: 30px;
+        top: 0;
+        left: 0;
+        transition: .5s;
+        border-radius: 50%;
+    }
+
+    .btn-slide2 span.circle2 {
+        background-color: #efa666;
+        font-size: 20px;
+    }
+
+    .btn-slide2 span.title2,
+    .btn-slide2 span.title-hover2 {
+        position: absolute;
+        left: 50px;
+        text-align: center;
+        margin: 0 auto;
+        font-size: 14px;
+        font-weight: bold;
+        color: #30abd5;
+        transition: .5s;
+    }
+
+    .btn-slide2 span.title2,
+    .btn-slide2 span.title-hover2 {
+        color: #efa666;
+        left: 30px;
+    }
+
+    .btn-slide2 span.circle2 i {
+        transform: scale(0.4);
+        position: absolute;
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .btn-slide2 span.title-hover2 {
+        left: 30px;
+        opacity: 0;
+    }
+
+    .btn-slide2 span.title-hover2 {
+        color: #fff;
+    }
+    #fixed-row {
+        position: fixed;
+        top: 0;
+        left: 20%;
+        width: 80%;
+        background-color: #fff; /* Add a background color if needed */
+        z-index: 999; /* Add a higher z-index to ensure it stays on top of other elements */
+        padding: 10px;
+    }
+</style>
+    <div class="row" id="fixed-row" style="color: #4e4e4e; font-style: bold; font-size: 3rem; ">
+        <div class="col-md-5">Material List</div>
+        <div id="wrap">
+            <a href="{% url 'export_materials' %}" class="btn-slide2">
+                <span class="circle2"><i class="fa fa-download fa-sm"></i></span>
+                <span class="title2">Download</span>
+                <span class="title-hover2">Click here</span>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'new-stock' %}">Add Material</a> </div>
+        </div>
+    </div>
+    
+    <div style="border-bottom: 1px solid white;"></div>
+    
+    <br>
+
+    <table class="table table-css table-bordered table-hover">
+
+        <form method="get">
+            <div class="input-group search">
+                {% render_field filter.form.name class="form-control textinput" placeholder="Search by material name" %}
+                <div class="input-group-append">
+                   <button type="submit" class="btn btn-pink"> Search </button>
+                </div>
+            </div>
+        </form>
+
+        <br>
+        
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th>Material</th>
+                <th>Code</th>
+                <th>Units</th>
+                <th>Quantity</th>
+                <th>Value</th>
+                <th>Received By</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+                  
+{% if object_list %}
+
+        <tbody>       
+            {% for stock in object_list %}
+                <tr>
+                    <td>
+                        <p>{{ stock.name }}</p>
+                    </td>
+                    <td>
+                        <p>{{ stock.code }}</p>
+                    </td>
+
+                    <td>
+                        <p>{{ stock.units }}</p>
+                    </td>
+
+                    <td> <p>{{ stock.quantity|floatformat:2 }}</p></td>
+
+                    <td> <p>{{ stock.value }}</p></td>
+
+                    <td>
+                        <p>{{ stock.receive }}</p>
+                    </td>
+
+                    <td> <p>{{ stock.time.date}}</p></td>
+
+
+                    <td class="align-middle">
+                        <a href="{% url 'edit-stock' stock.pk %}" class="btn btn-info btn-sm" title="Edit Details"><i class="bi bi-vector-pen"></i></a>
+                        <a href="{% url 'delete-stock' stock.pk %}" class="btn btn-danger btn-sm" title="Delete Material"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16"><path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/></svg></a>
+                    </td>          
+                </tr>
+            {% endfor %}                   
+        </tbody>
+
+    </table>  
+
+    <div class="align-middle">
+        {% if is_paginated %}
+
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% else %}
+
+        <tbody></tbody>   
+    </table>
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+
+{% endif %}
+
+{% endblock content %}

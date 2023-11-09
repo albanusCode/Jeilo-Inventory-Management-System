@@ -1,0 +1,19 @@
+{% extends bill_base %}
+
+{% block title %} REQUISITION FORM {{ bill.billno }}{% endblock title %}
+
+
+{% block content %}
+    <h1 class="heading">Purchase Bill No: {{ bill.billno }}</h1>
+    <p>Supplier: {{ bill.supplier.name }}</p>
+    
+    <h2 class="heading">Purchase Items:</h2>
+    {% for item in items %}
+    <div class="item">
+        <p>Item: {{ item.material }}, Quantity: {{ item.quantity }}, Price: {{ item.perprice }}, Total Price: {{ item.totalprice }}</p>
+    </div>
+    {% endfor %}
+
+    <p>Total: {{ bill.get_total_price }}</p>
+    <p>Grand Total: {{ bill.get_grand_total }}</p>
+{% endblock %}

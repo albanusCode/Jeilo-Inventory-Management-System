@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} Home {% endblock title %}
+
+
+{% block content %}
+
+    <div style="color:#532200; font-style: bold; font-size: 3rem; border-bottom: 1px solid #000742;">Welcome, {{ request.user.username }}</div>
+
+    <br>
+
+    <div id="container" style="position: relative; height:45vh; border: 1.2mm ridge #000742; border-radius: 20px;" class="align-middle table-bordered">
+        <canvas id="line-graph" width="400" height="400"></canvas>
+    </div>
+
+    <br>
+
+    <div class="row">
+
+         <div class="col-md-6">
+            <a href="{% url 'new-sale' %}" class="btn btn-success btn-lg btn-block btn-huge" title="Click to Record an Order">New Order Record</a>
+        </div>
+
+        <div class="col-md-6">
+            <a href="{% url 'select-supplier' %}" class="btn btn-success btn-lg btn-block btn-huge" title="Click to Record a Purchase">New Incoming Stock</a>
+        </div>
+       
+    </div>
+
+    <br>
+
+    <div class="content-section">
+        <div class="row">
+
+            <div class="col-md-6">
+                <div style="color: #4e6570; font-style: bold; font-size: 1.3em; border-bottom: 2px solid #4e6570">Recent Orders</div><br>
+                {% for item in sales %}
+                    {% if not forloop.first %}
+                        <br><div style="border-bottom: 0.5px solid #4e6570"></div><br>
+                    {% endif %}
+                    <div class="row">               
+                        <div class="col-md-9"> 
+                            Bill No: #{{ item.billno }} <br> 
+                            Purchased by <b>{{ item.name }}</b> <br>
+                            <small><i>{{ item.time.date }}</i></small>
+                        </div>
+                        <div class="col-md-2"> <br> Ksh.{{ item.get_total_price }} <br> <a href="{% url 'sale-bill' item.billno %}">View Quotation </a></div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                <div style="color: #4e6570; font-style: bold; font-size: 1.3em; border-bottom: 2px solid #4e6570">Recent Purchases</div><br>
+                {% for item in purchases %}
+                    {% if not forloop.first %}
+                        <br><div style="border-bottom: 0.5px solid #4e6570"></div><br>
+                    {% endif %}
+                    <div class="row">         
+                        <div class="col-md-9"> 
+                            Bill No: #{{ item.billno }} <br> 
+                            Purchased from <b>{{ item.supplier.name }}</b> <br>
+                            <small><i>{{ item.time.date }}</i></small>
+                        </div>
+                        <div class="col-md-2"> <br>Ksh.{{ item.get_total_price }} <br> <a href="{% url 'purchase-bill' item.billno %}">View Requisition </a> </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Loading Chart JS -->
+    <script src="{% static 'js/Chart.min.js' %}"></script>
+    <script>
+        Chart.defaults.global.defaultFontColor = '#3c3c3c';
+
+        // Helper function to generate random colors with deeper shades
+        function generateRandomColors(numColors) {
+            var colors = [];
+            for (var i = 0; i < numColors; i++) {
+                var color = 'rgba(' +
+                    Math.floor(Math.random() * 100) + ',' +  // Adjust the R (Red) value for deeper shades (0-255)
+                    Math.floor(Math.random() * 100) + ',' +  // Adjust the G (Green) value for deeper shades (0-255)
+                    Math.floor(Math.random() * 255) + ',' +  // Adjust the B (Blue) value for deeper shades (0-255)
+                    '1)'; // Set the alpha (opacity) value to 1 (opaque)
+                colors.push(color);
+            }
+            return colors;
+        }
+
+        // Assuming you have the data and labels for the line graph
+        var data = {{ data|safe }};
+        var labels = {{ labels|safe }};
+
+        // Generate deeper colors for each data point
+        var colors = generateRandomColors(data.length);
+
+        // Custom plugin to display bullets as data points
+        Chart.pluginService.register({
+            afterUpdate: function(chart) {
+                if (chart.config.type === 'line') {
+                    var datasets = chart.config.data.datasets;
+                    datasets.forEach(function(dataset, datasetIndex) {
+                        var meta = chart.getDatasetMeta(datasetIndex);
+                        var pointStyle = dataset.pointStyle || 'circle';
+                        meta.data.forEach(function(point, index) {
+                            point._model.pointStyle = pointStyle;
+                            var color = colors[index % colors.length];
+                            point._model.backgroundColor = color;
+                            point._model.borderColor = color;
+                            point._model.borderWidth = 1; // Set the border width for the bullets
+                        });
+                    });
+                }
+            }
+        });
+
+        // Configuration for the line graph
+        var lineConfig = {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Material in Inventory',
+                    data: data,
+                    pointStyle: 'circle', // Change this to any other point style like 'triangle', 'rect', etc.
+                    borderWidth: 0, // Set border width to 0 to hide the border around the bullet
+                    backgroundColor: 'rgba(0, 80, 255, 0.2)', // Bluish shade for the line graph area
+                    borderColor: '#000000', // Set the vertical lines to black
+                }],
+                labels: labels,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                // Add any other line graph-specific options here if needed
+                elements: {
+                    point: {
+                        radius: 5, // Adjust the size of the bullet here
+                        backgroundColor: 'rgba(0, 80, 255, 1)', // Make the bullets deeper
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                weight: 'bold', // Set the font weight to bold for x-axis labels
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#000000', // Set the vertical grid lines to black
+                        }
+                    }
+                }
+            },
+        };
+
+        // Runs the line graph on loading the webpage
+        window.onload = function() {
+            var ctx = document.getElementById('line-graph').getContext('2d');
+            window.LineStock = new Chart(ctx, lineConfig);
+        };
+    </script>
+
+
+
+
+
+
+
+{% endblock content %}

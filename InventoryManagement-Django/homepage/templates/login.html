@@ -1,0 +1,241 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Main CSS, then Sidebar CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css' %}">
+
+    <title>JEILO - Login</title>
+
+    <style>
+        body {
+            /* Set the background color as a fallback */
+            background-color: #f0f0f0;
+            /* Set the background image using linear-gradient */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'dj_app/media/home.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed; /* Optional: to keep the background fixed while scrolling */
+        }
+
+        .login-container {
+            margin-top: 100px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        .login-title {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-form label {
+            color: #494949;
+            font-weight: bold;
+        }
+
+        .login-form .form-control {
+            border-radius: 5px;
+        }
+
+        .login-form .btn {
+            border-radius: 5px;
+        }
+
+        .login-form .btn.ghost-blue {
+            color: #fff;
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .login-form .btn.ghost-blue:hover {
+            background-color: #2b88b5;
+            border-color: #2b88b5;
+        }
+
+        .login-form .btn.ghost-red {
+            color: #fff;
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .login-form .btn.ghost-red:hover {
+            background-color: #cc392c;
+            border-color: #cc392c;
+        }
+
+        /* Customizing the color of required field indicator */
+        .login-form .required-field::before {
+            content: '*';
+            color: #e74c3c; /* Red color */
+            margin-right: 2px;
+        }
+        .wrapper{
+            position: relative;
+            width: 100%;
+            height: 100%;
+          }
+          
+          button{
+            font-family: 'Ubuntu', sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            width: 170px;
+            height: 40px;
+            line-height: 1;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 3px solid #8C82FC;
+            background: #fff;
+            color: #8C82FC;
+            border-radius: 40px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 2s;
+          }
+          
+          button:hover{
+            background: #8C82FC;
+            color: #fff;
+          }
+          
+          button span{
+            opacity: 1;
+            visibility: visible;
+            transition: all 2s;
+          }
+          
+          .success{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 1s;
+          }
+          
+          .success svg{
+            width: 20px;
+            height: 20px;
+            fill: yellowgreen;
+            transform-origin: 50% 50%;
+            transform: translateY(-50%) rotate(0deg) scale(0);
+            transition: all 1s;
+          }
+          
+          button.is_active{
+            width: 40px;
+            height: 40px;
+          }
+          
+          button.is_active .success{
+            opacity: 1;
+            visibility: visible;
+          }
+          
+          button.is_active .success svg{
+            margin-top: 50%;
+            transform: translateY(-50%) rotate(720deg) scale(1);
+          }
+          
+          button.is_active span{
+            opacity: 0;
+            visibility: hidden;
+          }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 login-container">
+                {% if user.is_authenticated %}
+                    <br><br>
+                    <h2 class="login-title">You are already logged in, {{ request.user.username }}!</h2>
+                    <div class="border-top pt-3">
+                        <br>
+                        <a class="btn ghost-blue" href="{% url 'home' %}">Go back home</a><br><br>
+                        <a class="btn ghost-red" href="{% url 'logout' %}">Log Out</a>
+                    </div>
+                {% else %}
+                    <div class="content-section">
+                        <form class="login-form" method="POST">
+                            {% csrf_token %}
+                            <fieldset class="form-group bg-dark">
+                                <span style="font-size: 350%; display: flex; text-align: center; justify-content: center;"><img src="{% static "dj_app/media/logo.png" %}" width="50%" height="50%" alt="home" /></span>
+                                <span class="border-bottom mb-4"><div class="login-title">Please login to continue...</div></span>
+                                {% if form.errors %}
+                                <div class="alert alert-danger text-center">
+                                    Incorrect Username or password
+                                </div>
+                                {% endif %}
+                                <div class="form-group">
+                                    <label class="text-light" for="{{ form.username.id_for_label }}">Username<span class="required-field"></span></label>
+                                    <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" placeholder="Enter username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="text-light" for="{{ form.password.id_for_label }}">Password<span class="required-field"></span></label>
+                                    <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.html_name }}" placeholder="Enter password" required>
+                                </div>
+                                
+                                <div class="wrapper form-group">
+                                    <button class="" type="submit">
+                                        <span>Login</span>
+                                        <div class="success">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"  viewBox="0 0 29.756 29.756" style="enable-background:new 0 0 29.756 29.756;" xml:space="preserve">
+                                                <path d="M29.049,5.009L28.19,4.151c-0.943-0.945-2.488-0.945-3.434,0L10.172,18.737l-5.175-5.173   c-0.943-0.944-2.489-0.944-3.432,0.001l-0.858,0.857c-0.943,0.944-0.943,2.489,0,3.433l7.744,7.752   c0.944,0.943,2.489,0.943,3.433,0L29.049,8.442C29.991,7.498,29.991,5.953,29.049,5.009z"/>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </div>
+
+                            </fieldset>
+                            <!-- <div class="form-group">
+                                <button class="btn btn-outline-success btn-lg btn-block" type="submit">Log In</button>
+                            </div> -->
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'bootstrap/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'bootstrap/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
+    <script>
+        let btn = document.querySelector("button");
+
+        btn.addEventListener("click", active);
+
+        function active() {
+        btn.classList.toggle("is_active");
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %} New Order {% endblock title %}
+
+
+{% block content %}
+
+    <style>
+        /* Add a solid black border to all form fields */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            border: 1px solid #000;
+        }
+
+        /* Add padding to the form fields to give them some space from the border */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 5px;
+        }
+
+        /* Optionally, you can add some rounded corners to the form fields */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            border-radius: 4px;
+        }
+
+        /* Style the form headings to make them more visible */
+        .panel-heading-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .errorlist {
+            color: red;
+        }
+
+        .green-icon {
+            color: green;
+            font-weight: bolder;
+        }
+    </style>
+
+    <style>
+        .place-order {
+            width: 140px;
+            height: 40px;
+            border-radius: 5px;
+            background-color: #cec4c4;
+            position: relative;
+            overflow: hidden;
+            border: #000;
+            cursor: pointer;
+            transition: all 0.5s;
+          }
+          
+          .text {
+            width: 100%;
+            height: 100%;
+            visibility: hidden;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            }
+          
+            &:focus {
+              outline: none;
+            }
+          
+            .forklift {
+                transform: scale(0.4);
+                position: absolute;
+                border: #000;
+                top: -2px;
+                left: -65px;
+                animation: lift-moving 3s;
+              }
+          
+            .upper {
+              width: 34px;
+              height: 20px;
+              margin-bottom: 2px;
+              border: 5px solid #ff7745;
+              position: relative;
+              border-radius: 10px 50px 10px 5px;
+            }
+          
+            .upper:after {
+              content: '';
+              width: 30px;
+              height: 50px;
+              position: absolute;
+              left: 170%;
+              top: 12px;
+              box-sizing: border-box;
+              border-left: 5px solid #000;
+              border-bottom: 6px solid #000;
+              border-radius: 0 0 0 5px;
+              transform-origin: center;
+            }
+          
+            .lower {
+              width: 60px;
+              height: 30px;
+              position: relative;
+              background-color: #ff4500;
+              border-radius: 5px 15px 10px 10px;
+            }
+          
+            .lower:before,
+            .lower:after {
+              content: '';
+              width: 20px;
+              height: 20px;
+              position: absolute;
+              left: 0;
+              bottom: -10px;
+              border: 3px solid #2b59b5;
+              border-radius: 50%;
+              background-color: #000;
+            }
+          
+            .lower:after {
+              left: 36px;
+            }
+          
+            .box {
+              width: 50px;
+              height: 50px;
+              background-color: #ad8762;
+              border-radius: 5px;
+              position: absolute;
+              top: 56px;
+              border: #000;
+              left: 50px;
+              transform: scale(0.5);
+              animation: box 3s;
+            }
+          
+            .box:before,
+            .box:after {
+              content: '';
+              width: 4px;
+              height: 12px;
+              left: 21px;
+              background-color: #ffbf59;
+              position: absolute;
+            }
+
+            .forklift,.box {
+                display: none;
+            }
+
+            .place-order--done .done {
+                opacity: 1;
+                transform: translateY(0);
+            }
+          
+            .box:after {
+              height: 10px;
+              left: 25px;
+            }
+
+            .place-order-text {
+                width: 100%;
+                height: 100%;
+                color: #fff;
+                font-weight: bold;
+                font-size: 16px;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .done-text {
+                /* Styles for the "Done" text */
+                visibility: hidden;
+                color: #000000;
+                font-weight: bolder;
+                font-size: 16px;
+                position: absolute;
+                top: 20%; /* Center the text vertically */
+                transform: translate(-50%, -50%); /* Center the text perfectly */
+                opacity: 0;
+                transition: opacity 0.2s, transform 0.5s;
+            }
+          
+            &--default .text {
+              opacity: 1;
+              transform: translateY(0);
+            }
+
+            &--done .done {
+                visibility: visible; /* Show the "Done" text when needed */
+                opacity: 1;
+                transform: translateY(0);
+                transition: opacity 0.1s, transform 0.1s;
+            }
+          
+            &--default .done {
+              transform: translateY(20px);
+            }
+          
+            &--placing .forklift {
+              display: block;
+            }
+          
+            &--placing .box {
+              display: block;
+            }
+          
+            &--placing .text {
+              transform: translateY(-20px);
+            }
+          
+            &--done .done {
+                visibility: visible; /* Show the "Done" text when needed */
+                opacity: 1;
+                transform: translateY(0);
+                transition: opacity 0.2s, transform 0.2s;
+            }
+          
+            &--done .default {
+              transform: translateY(-20px);
+              visibility: visible; /* Show the "Done" text when needed */
+              opacity: 1;
+              transform: translateY(0);
+              transition: opacity 0.2s, transform 0.2s;
+            }
+          
+          @keyframes lift-moving {
+            0% {
+              left: -65px;
+            }
+            50% {
+              left: 20px;
+            }
+            60% {
+              left: 15px;
+            }
+            100% {
+              left: 200px;
+            }
+          }
+          
+          @keyframes box {
+            0% {
+              top: 56px;
+            }
+            20% {
+              top: 6px;
+              left: 50px;
+            }
+            50% {
+              top: 6px;
+              left: 50px;
+            }
+            60% {
+              top: 6px;
+              left: 45px;
+            }
+            100% {
+              top: 6px;
+              left: 230px;
+            }
+          }
+    </style>
+
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Order</div>
+    
+    <br>
+
+    <form method="post" class="panel panel-default">
+        
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="panel-heading panel-heading-text">Customer Details</div>
+        <div class="panel-body">
+            
+            {{ form.name.errors }}
+            {{ form.shipm.errors }}
+            {{ form.mode.errors }}
+            {{ form.phone.errors }}
+            {{ form.email.errors }}
+            {{ form.address.errors }}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}" class="panel-body-text">Customer Name:</label>
+                {{ form.name }}                
+            </div>
+            <div class="form-group">
+                <label for="{{ form.shipm.id_for_label }}" class="panel-body-text">Shipment Method:</label>
+                {{ form.shipm }}                
+            </div>
+            <div class="form-group">
+                <label for="{{ form.deliveryDate.id_for_label }}" class="panel-body-text">Delivery Date:</label>
+                {{ form.deliveryDate }}                
+            </div>
+            <div class="form-group">
+                <label for="{{ form.paymentTerms.id_for_label }}" class="panel-body-text">Payment Terms:</label>
+                {{ form.paymentTerms }}                
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.mode.id_for_label }}" class="panel-body-text">Mode of Payment:</label>
+                {{ form.mode }}                
+            </div>
+            <div class="form-group">
+                <label for="{{ form.dueDate.id_for_label }}" class="panel-body-text">Due Date</label>
+                {{ form.dueDate }}                
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6"> 
+                    <label for="{{ form.phone.id_for_label }}" class="panel-body-text">Phone No:</label>
+                    {{ form.phone }}
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <label for="{{ form.email.id_for_label }}" class="panel-body-text">Email:</label>
+                    {{ form.email }}
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}" class="panel-body-text">Address:</label>
+                {{ form.address }}
+            </div>
+
+           
+
+        </div>
+
+        <br>
+
+        <div class="panel panel-default">
+            
+            {{ formset.management_form }}
+
+            <div class="panel-heading panel-heading-text">Order Details</div>
+            
+            
+                <div id="stockitem"> 
+                    <div class="panel-body">
+                    {% for iform in formset %}
+                        <div class="row form-row">
+                            <div class="form-group col-md-6">
+                                {{ iform.stock.errors }}
+                                <label class="panel-body-text">Material:</label>
+                                {{ iform.stock }}
+                            </div>
+    
+                            <div class="form-group col-md-6">
+                                {{ iform.product.errors }}
+                                <label class="panel-body-text">Product:</label>
+                                {{ iform.product }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="panel-body-text">Description:</label>
+                                {{ iform.description }}
+                            </div>
+    
+                            <div class="form-group col-md-2">
+                                <label class="panel-body-text">Price per Product:</label>
+                                {{ iform.perprice }}
+                            </div>
+                            
+                            <div class="form-group col-md-2">
+                                {{ iform.pqty.errors }}
+                                <label class="panel-body-text">Product Quantity:</label>
+                                {{ iform.pqty }}
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="panel-body-text">Material P. Proc:</label>
+                                <input type="number" class="textinput form-control setprice materialPerProduct" min="0" required value="1">
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                {{ iform.quantity.errors }}
+                                <label class="panel-body-text">Material Quantity:</label>
+                                {{ iform.quantity }}
+                            </div>
+    
+                            <div class="form-group col-md-2">
+                                <label class="panel-body-text">Total Price:</label>
+                                {{iform.totalprice}}
+                            </div>
+                            
+                            <div class="form-group col-md-1">
+                                <label class="panel-body-text" style="color: #000">.</label>
+                                <button class="form-control btn btn-danger remove-form-row">-</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div style="text-align: right;">                    
+                            <a href="#" class="add-form-row">+ Add More</a>
+                    </div>
+                </div>
+                
+            </div>
+
+            <br>
+            <div class="">
+                <div class="align-middle" style="padding-top: 37px;">
+                <button type="submit" class="place-order place-order--default">
+                    <div class="btn btn-success default place-order-text">Add to Orders</div>
+                    <div class="forklift">
+                      <div class="upper"></div>
+                      <div class="lower"></div>
+                    </div>
+                    <div class="box animation"></div>
+                    <div class="done text done-text">Recorded <i class="bi bi-check2 green-icon"></i> </div>
+                </button>
+                <a href="{% url 'sales-list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+            
+            
+        </div>
+
+    </form>
+
+    <!-- Custom JS to add and remove item forms -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
+    <script type="text/javascript">
+        
+        //creates custom alert object
+        var custom_alert = new custom_alert();
+
+        function updateElementIndex(el, prefix, ndx) {
+            var id_regex = new RegExp('(' + prefix + '-\\d+)');
+            var replacement = prefix + '-' + ndx;
+            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
+        }
+        
+        //stores the total no of item forms
+        var total = 1;
+
+        function cloneMore(selector, prefix) {
+            var newElement = $(selector).clone(true);
+            //var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+            newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+                var name = $(this).attr('name')
+                if(name) {
+                    name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+                    var id = 'id_' + name;
+                    $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+                }
+            });
+            newElement.find('label').each(function() {
+                var forValue = $(this).attr('for');
+                if (forValue) {
+                forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+                $(this).attr({'for': forValue});
+                }
+            });
+            total++;
+            $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+            $(selector).after(newElement);
+            return false;
+        }
+        
+        function deleteForm(prefix, btn) {
+            //var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (total > 1){
+                btn.closest('.form-row').remove();
+                var forms = $('.form-row');
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                for (var i=0, formCount=forms.length; i<formCount; i++) {
+                    $(forms.get(i)).find(':input').each(function() {
+                        updateElementIndex(this, prefix, i);
+                    });
+                }
+                total--;
+            } else {
+                custom_alert.render('Field cannot be deleted');
+            }
+            return false;
+        }
+        
+        $(document).on('click', '.add-form-row', function(e){
+            e.preventDefault();
+            cloneMore('.form-row:last', 'form');
+            return false;
+        });
+        
+        $(document).on('click', '.remove-form-row', function(e){
+            e.preventDefault();
+            deleteForm('form', $(this));
+            return false;
+        });
+
+
+        //stores pk and quantity of all stocks into a js object 'stocks'
+        var stocks = [
+            {% for stock in stocks %}
+                {% if not forloop.first %},{% endif %}
+                {
+                    pk: {{ stock.pk }},
+                    quantity: {{ stock.quantity }}
+                }
+            {% endfor %}
+        ];
+
+        
+        //updates the total price by multiplying 'price per item' and 'quantity' 
+        $(document).on('change', '.setprice', function(e){
+            e.preventDefault();
+            //gets the values
+            var element = $(this);
+            var stock = element.parents('.form-row').find('.stock').val();
+            var quantity = element.parents('.form-row').find('.quantity').val();
+            var pqty = parseFloat(element.parents('.form-row').find('.pqty').val());
+            var perprice = element.parents('.form-row').find('.price').val();
+            var materialPerProduct = parseFloat(element.parents('.form-row').find('.materialPerProduct').val());
+            //checks if stocks are available
+            stocks.forEach(function(stockSummary, i) {
+                var pk = stocks[i].pk;
+                var squantity = stocks[i].quantity;
+                if(stock == pk) {
+                    //checks if ordered stock is more than available stock
+                    if(quantity > squantity){
+                        alert('Insufficient material quantity to make the order')
+                        quantity = quantity - 1;
+                        if(quantity <= 1){
+                            //no stocks are available. Attempts to delete field
+                            custom_alert.render('Stocks are currently unavailable. Field will be removed;');
+                            //Sets quantity to 0 as failsafe for when the total no of item forms are 1
+                            element.parents('.form-row').find('.quantity').val(0);
+                            deleteForm('form', element);
+                        } else {
+                            element.parents('.form-row').find('.quantity').val(squantity-1);
+                            quantity = squantity - 1;
+                            custom_alert.render('Exceeded current stock available');
+                        }
+                    }
+                }
+            });     
+            //calculates the total
+            var materialQuantity = materialPerProduct * pqty;
+            var tprice = perprice * pqty;
+            //sets it to field
+            element.parents('.form-row').find('.totalprice').val(tprice);
+            element.parents('.form-row').find('.quantity').val(materialQuantity);
+            return false;
+        });
+
+        const btn = document.querySelector(".place-order");
+
+        btn.addEventListener("click", () => {
+        if (!btn.classList.contains("place-order--placing")) {
+            btn.classList.add("place-order--placing");
+            btn.querySelector(".place-order-text").style.visibility = "hidden"; // Hide the "Place Order" text
+            btn.querySelector(".forklift").style.display = "block"; // Show the forklift
+            btn.querySelector(".box").style.display = "block"; // Show the box
+
+            setTimeout(() => {
+            btn.querySelector(".place-order-text").style.visibility = "hidden"; // Hide the "Place Order" text
+            btn.querySelector(".done-text").style.visibility = "visible"; // Show the "Done" text after the forklift animation
+            btn.querySelector(".done-text").style.opacity = 1; // Make the "Done" text visible
+            btn.querySelector(".done-text").style.transform = "translateY(0)"; // Move the "Done" text to its original position
+
+            btn.classList.add("place-order--done");
+            btn.classList.remove("place-order--placing");
+
+            setTimeout(() => {
+                btn.querySelector(".place-order-text").style.visibility = "visible"; // Show the "Place Order" text again
+                btn.querySelector(".done-text").style.visibility = "hidden"; // Hide the "Done" text
+                btn.querySelector(".done-text").style.opacity = 0; // Make the "Done" text transparent
+                btn.querySelector(".done-text").style.transform = "translateY(20px)"; // Move the "Done" text back up
+
+                btn.querySelector(".forklift").style.display = "none"; // Hide the forklift
+                btn.querySelector(".box").style.display = "none"; // Hide the box
+                btn.classList.remove("place-order--done");
+                btn.classList.add("place-order--default");
+            }, 2000); // Change this delay as needed for the "Done" text to remain visible
+            }, 4000); // Change this delay as needed for the forklift animation
+        }
+        });
+
+    </script>
+
+{% endblock content %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+
+{% block title %} {{title}} {% endblock title %}
+
+
+{% block content %}
+
+    <style>
+        /* Add a solid black border to all form fields */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            border: 1px solid #000;
+        }
+
+        /* Add padding to the form fields to give them some space from the border */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 5px;
+        }
+
+        /* Optionally, you can add some rounded corners to the form fields */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            border-radius: 4px;
+        }
+
+        /* Style the form headings to make them more visible */
+        .panel-heading-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Style the error messages to make them stand out */
+        .errorlist {
+            color: red;
+        }
+    </style>
+
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">{{title}}</div> <br>
+    
+    <form method="post">
+    
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        {{ form.name.errors }}
+        {{ form.price.errors }}
+
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Name:</label>
+            {{ form.name }}
+        </div>
+
+        
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="{{ form.phone.id_for_label }}">Price:</label>
+                {{ form.price }}
+            </div>
+            
+        </div>
+
+        
+
+
+        <br>
+
+
+        
+
+        <div class="align-middle">
+            <button type="submit" class="btn btn-success">{{ savebtn }}</button>
+            {% if title ==   "Update Supplier Stock" %}
+                <button type="reset" class="btn btn-danger" >Reset</button>
+            {% endif %}
+            {% if delbtn %}
+                <a href="{% url 'remove-supplier-material' material.pk %}" class="btn btn-danger"> Remove  </a>
+            {% endif %}
+            <a href="{% url 'suppliers-list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+        
+    </form>
+
+{% endblock content %}

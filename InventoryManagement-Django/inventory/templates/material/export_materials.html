@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+
+{% block title %}Export Stocks{% endblock %}
+
+{% block content %}
+    <h1>Export Stocks to CSV</h1>
+
+    <form action="{% url 'export_materials' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Export" class="btn btn-primary">
+    </form>
+{% endblock %}

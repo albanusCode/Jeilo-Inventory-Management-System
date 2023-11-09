@@ -1,0 +1,149 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/bootstrap.min.css' %}">
+
+    <!-- Main CSS, then Sidebar CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css' %}">    
+    
+    <title>IMS - Logout</title>
+
+    <style>
+        body {
+            /* Set the background color as a fallback */
+            background-color: #f0f0f0;
+            /* Set the background image using linear-gradient */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'dj_app/media/home.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed; /* Optional: to keep the background fixed while scrolling */
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 100px;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #607d8b;
+        }
+
+        .message {
+            margin-top: 50px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container a {
+            text-decoration: none;
+        }
+
+        .logout-button {
+            display: inline-block;
+            padding: 10px 30px;
+            font-size: 1.5rem;
+            border: 2px solid #607d8b;
+            border-radius: 5px;
+            color: #607d8b;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #607d8b;
+            color: #fff;
+        }
+
+        .link {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #607d8b;
+        }
+
+        .link a {
+            text-decoration: none;
+            color: #607d8b;
+        }
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            border-top: 2px solid #607d8b;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            display: inline-block;
+            vertical-align: middle;
+            opacity: 0;
+        }
+
+        /* Animation keyframes for spinning */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Add the loading class when the button is clicked */
+        .loading-button.loading .loading-spinner {
+            opacity: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        Inventory Management System
+    </div>
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6">
+            <div class="message">You have been logged out! Login again to continue.</div>
+            <div class="button-container">
+                <a href="{% url 'login' %}" class="btn logout-button" onclick="handleLoginAgain()">Log In Again<span class="loading-spinner"></span></a>
+            </div>
+            <div class="link">
+                <a href="{% url 'about' %}">Go to About</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'bootstrap/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'bootstrap/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
+
+    <script>
+        function handleLoginAgain() {
+            var loginAgainBtn = document.querySelector(".logout-button");
+            loginAgainBtn.classList.add("loading");
+
+            // Simulate loading time (you can replace this with actual login process)
+            setTimeout(function() {
+                // Reset button state after the loading is complete
+                loginAgainBtn.classList.remove("loading");
+            }, 3000); // Change 3000 to the actual loading time
+        }
+    </script>
+
+</body>
+
+</html>

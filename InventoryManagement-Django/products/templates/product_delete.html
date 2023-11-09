@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Delete page{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="offset-md-3">
+            <div class="p-3">
+                <div class="alert bg-danger">
+                    <h4>Are you sure you want to delete the selected product?</h4>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <a class="btn btn-secondary" href="{% url 'products' %}">Cancel</a>
+                    <input class="btn btn-danger" type="submit" value="Confirm">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

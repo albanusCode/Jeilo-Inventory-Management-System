@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+
+{% block title %} About {% endblock title %}
+
+
+{% block content %}
+    
+    {% if not user.is_authenticated  %}
+        <br>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Go Back</a>
+    {% endif %}    
+    
+    <br>
+    <h4 style="color:#9b1330" class="align-middle">| SYSTEM STILL ON DEVELOPMENT FOR FURTHER FEATURES AND OPEARATIONS|</h4> <br>
+    <br>
+        <h2 style="color:#4caf50" class="align-middle">| Features and System Manual|</h3> <br>
+            <ul style="display:table; margin:0 auto; ">                
+                <li style="color:#494949;">Interactive Chart to display current available materials</li>
+                <li style="color:#494949;">Stock details like current available materials are maintained</li>
+                <li style="color:#494949;">Incoming transactions are done through purchases</li>
+                <li style="color:#494949;">Outgoing transactions are done through sales</li>
+                <li style="color:#494949;">Every transaction performed through the software is recorded</li>
+                <li style="color:#494949;">Bill is dynamically rendered and can be printed</li>
+                <li style="color:#494949;">Separate profiles are maintained for suppliers</li>
+            </ul>  
+        <br>
+        <h2 style="color:#4caf50" class="align-middle">| Operation Processes|</h3> <br>
+            <ul style="display:table; margin:0 auto; ">                
+                <li style="color:#494949;">
+                    <h4 style="color:#b30871">Sending Requsition to Supplier</h4>
+                    <p>
+                        When you want to send a quotation to the supplier, go to the <span style="color:#b30871">Purchase</span> , click on <span style="color:#b30871">new incoming stock</span>, 
+                        select the <span style="color:#b30871">supplier</span> from the dropdown list of suppliers, fill the form details and submit. Download 
+                        the appearing <span style="color:#b30871">Requisition</span> form. Go to the supplier, suppliers list, select supplier, click on <span style="color:#b30871">quotation Inquiry</span>, 
+                        Enter the message to be attached with the requisition form, add quotation from by uplaoding the one you just downloaded. 
+                        Make sure the supplier selected when making the form is the same supplier receiving the quotation.
+                    </p>
+                </li>
+                <li style="color:#494949;">
+                    <h4 style="color:#b30871">Sending Quotation to Buyer</h4>
+                    <p>
+                        When you want to send a quotation to buyer, go to the <span style="color:#b30871">Sales</span>, <span style="color:#b30871">Create and Order</span>. fill the customer details and order details. 
+                        Currently, the one MAIN material being selected from material list is the one whose quantity is deducted from the existing quantity. 
+                        If the order consist of other materials, you need to view the material list in the <span style="color:#b30871">Inventory</span> section and deduct their quantities from there. 
+                        Also, remember to deduct the quantity of the <span style="color:#b30871">Accessories</span> being used to make the order to keep everything up to date.
+                    </p>
+                </li>
+                <li style="color:#494949;">
+                    <h4 style="color:#b30871">Recording Shop Products</h4>
+                    <p>
+                        When you want to record a product in the shop, visit the <span style="color:#b30871">Produscts</span> Section in the system and fill the form for the product details. 
+                        On issuing a product from the shop, remember to <span style="color:#b30871">Update (icon)</span> the quantity of the remaining products of the type issued.
+                    </p>
+                </li>
+                <li style="color:#494949;">
+                    <h4 style="color:#b30871">Admin Previledges</h4>
+                    <p>
+                        Only admins with staff batch can access the database and make changes. The changes include deleting an admin and/or adding
+                    </p>
+                </li>
+            </ul>  
+        <br>
+    <div class="align-middle">
+        <h2 style="color:#4caf50" >| Developers |</h3> <br>
+            <p><span style="color:#017c57;">Albanus</span><span> & </span><span style="color:#9b2e52;">Rawlings</span> </p>
+            <br><br>
+            <div class="bg-secondary">
+                <p><span style="color:#ffffff;">&copy; All rights reserved. JeiloCollections @2023. </span> </p>
+            </div>
+    </div>
+
+{% endblock content %}

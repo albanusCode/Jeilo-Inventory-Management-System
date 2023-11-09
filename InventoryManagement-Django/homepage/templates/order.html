@@ -1,0 +1,61 @@
+{% extends 'partials/base.html' %}
+{% block title %}Order page{% endblock %}
+
+{% block content %}
+{% include 'partials/topnav.html' %}
+
+  <!--Table-->
+<div class="container bg-white">
+      <div class="row my-4">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-8">
+          <table class="table bg-white">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Product</th>
+                <th scope="col">Type</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Ordered by</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>0782536796</td>
+              <td>
+
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Jacob</td>
+              <td>Thorton</td>
+              <td>36799854</td>
+              <td>
+
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Larry</td>
+              <td>the bird</td>
+              <td>86526789</td>
+              <td>
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+</div>
+
+
+    <!--End Table-->
+
+{% endblock %}

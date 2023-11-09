@@ -1,0 +1,162 @@
+{% extends bill_base %}
+{% load static %}
+
+
+{% block title %} Order Bill No : {{ bill.billno }}{% endblock title %}
+
+
+{% block content %}
+    
+
+    <!-- <br><br> -->
+
+    <form method="post">
+    {% csrf_token %}
+
+        <div class="bg">
+
+            <br>
+
+            <div id="printArea" class="bg">
+
+                <table class="outer-box inner-box" style="width: 840px; margin-left: auto; margin-right: auto;">
+                    <tbody>
+                        
+                        <tr style="height: 1px;">
+                            <td> <p style="text-align: center;"><b><h3 style="color: aqua; display: flex; justify-content: center; align-items: center;">BUYER QUOTATION</h3></b></p> </td>
+                        </tr>
+                        
+                        <tr style="text-align: center;">
+                            <td >
+                                <span style="font-size: 350%;"><img src="{% static "dj_app/media/logo.png" %}" width="25%" height="25%" alt="home" /></span> <br>
+                                <span style="font-size: 120%; font-weight: bold;">DEALERS IN : <span>Handcrafted leather & textile bags</span></span> <br>
+                                <span style="font-weight: bold;">REGD ADDRESS :</span> Ngong Road Professional Centre,<br>2nd Ngong Rd, Nairobi<br>
+                                <span style="font-weight: bold;">EMAIL : info@jeilocollections.com</span> <br><br>
+                            </td>
+                        </tr>
+                        
+                        <tr style="text-align: left;">
+                            <td >
+                                <span style="font-weight: bold; text-transform:uppercase; margin-left: 20px;">RECiPIENT : {{ bill.name }}</span> <br><br>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
+                                <tbody>
+                                    <tr style="text-align: center; background-color:rgb(158, 158, 158)">
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;SALESPERSON</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;SHIPPING METHOD</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;SHIPPING TERMS</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;DELIVERY DATE</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;PAYMENT TERMS</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;MODE OF PAYMENT</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;DUE DATE</td>
+                                    </tr>
+                                    <tr style="text-align: center;">
+                                        <td class="inner-box" >&nbsp;Grace Mbugua</td>
+                                        <td class="inner-box" >&nbsp;{{ bill.shipm }}</td>
+                                        <td class="inner-box" >&nbsp;Invoice Payment/LPO</td>
+                                        <td class="inner-box" >&nbsp;{{ bill.deliveryDate }}</td>
+                                        <td class="inner-box" >&nbsp;{{ bill.paymentTerms }}</td>
+                                        <td class="inner-box" >&nbsp;{{ bill.mode }}</td>
+                                        <td class="inner-box" >&nbsp;{{ bill.dueDate }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
+                                <tbody>
+                                    <tr  style="background-color:rgb(158, 158, 158)">
+                                        <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;REFERENCE NO</td>
+                                        <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;ORDER DATE</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="inner-box" style="width: 25%;">&nbsp;{{ bill.billno }}</td>
+                                        <td class="inner-box" style="width: 25%;">&nbsp;{{ bill.time.date }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
+                                <tbody>
+                                    <tr style="background-color:rgb(158, 158, 158)">
+                                        <td class="inner-box" style="width: 05%; font-weight: bold; text-align: center;">&nbsp;SL</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: center;">ITEM</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: center;">DESCRIPTION</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">QTY </td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">UNIT PRICE</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">TOTAL</td>
+                                    </tr>
+                                    {% for item in items %}
+                                        <tr style="height: auto;">
+                                            <td class="inner-box" style="width: 5%;">&nbsp; {{ forloop.counter }}</td>
+                                            <td class="inner-box" style="width: 12%;">&nbsp; {{ item.product }}</td>
+                                            <td class="inner-box" style="width: 30%;">&nbsp; {{ item.description }}</td>
+                                            <td class="inner-box" style="width: 12%;">&nbsp; {{ item.pqty }}</td>
+                                            <td class="inner-box" style="width: 12%;">&nbsp; {{ item.perprice }}</td>
+                                            <td class="inner-box" style="width: 30%;">&nbsp; {{ item.totalprice }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="text-align: right;">
+                                <span style="font-weight: bold;">APPROVED BY <br><br><br><br> Signature</span>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td style="text-align: center;">
+                                <!-- FINAL TEXT -->
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- <br><br> -->
+
+        </div>
+
+        <br><br>
+
+        <div class="wrapper">
+            <button class="center btn btn-success" onclick="printpage('printArea')">Print</button>
+            {% comment %} <button class="center btn btn-success" type="submit">Save Draft</button> {% endcomment %}
+            <a href="{% url 'sales-list' %}" class="btn btn btn-primary">Save</a>
+            <a href="{% url 'sale-bill-pdf' bill.billno %}?download_pdf=true" class="center btn btn-secondary">Download</a>
+
+        </div>
+    
+    </form>
+    
+    <script>
+        function printpage(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }       
+        </script>
+
+{% endblock %}

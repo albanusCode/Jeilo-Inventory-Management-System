@@ -1,0 +1,29 @@
+<!-- quotation_template.html -->
+{% extends "bill/bill_base.html" %}
+
+{% block content %}
+    <!-- Quotation content specific to this template -->
+    <h1>Quotation Details</h1>
+    <p>Quotation Number: {{ quotation.quotation_number }}</p>
+    <p>Date: {{ quotation.date }}</p>
+
+    <h2>Items</h2>
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.product }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.perprice }}</td>
+                <td>{{ item.total }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Add any additional quotation-related information here -->
+{% endblock %}

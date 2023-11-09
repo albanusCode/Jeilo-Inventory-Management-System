@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Products page{% endblock %}
+
+{% block content %}
+
+<style>
+  #wrap {
+      display: inline-block;
+      vertical-align: middle;
+  }
+
+  .btn-slide2 {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 10px;
+      position: relative;
+      height: 40px;
+      width: 160px;
+      line-height: 40px;
+      padding: 0;
+      border-radius: 50px;
+      background: #fdfdfd;
+      border: 2px solid #0099cc;
+      margin: 10px;
+      transition: .5s;
+  }
+
+  .btn-slide2 {
+      border: 2px solid #efa666;
+  }
+
+  .btn-slide2:hover {
+      background-color: #efa666;
+  }
+
+  .btn-slide2:hover span.circle2 {
+      left: 100%;
+      margin-left: -35px;
+      background-color: #fdfdfd;
+      color: #0099cc;
+  }
+
+  .btn-slide2:hover span.circle2 {
+      color: #efa666;
+  }
+
+  .btn-slide2:hover span.title2 {
+      left: 30px;
+      opacity: 0;
+  }
+
+  .btn-slide2:hover span.title-hover2 {
+      opacity: 1;
+      left: 30px;
+  }
+
+  .btn-slide2 span.circle2 {
+      display: block;
+      background-color: #0099cc;
+      color: #fff;
+      position: absolute;
+      float: left;
+      margin: 2px;
+      line-height: 30px;
+      height: 30px;
+      width: 30px;
+      top: 0;
+      left: 0;
+      transition: .5s;
+      border-radius: 50%;
+  }
+
+  .btn-slide2 span.circle2 {
+      background-color: #efa666;
+      font-size: 20px;
+  }
+
+  .btn-slide2 span.title2,
+  .btn-slide2 span.title-hover2 {
+      position: absolute;
+      left: 50px;
+      text-align: center;
+      margin: 0 auto;
+      font-size: 14px;
+      font-weight: bold;
+      color: #30abd5;
+      transition: .5s;
+  }
+
+  .btn-slide2 span.title2,
+  .btn-slide2 span.title-hover2 {
+      color: #efa666;
+      left: 30px;
+  }
+
+  .btn-slide2 span.circle2 i {
+      transform: scale(0.4);
+      position: absolute;
+      font-size: 14px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+  }
+
+  .btn-slide2 span.title-hover2 {
+      left: 30px;
+      opacity: 0;
+  }
+
+  .btn-slide2 span.title-hover2 {
+      color: #fff;
+  }
+  #fixed-row {
+      position: fixed;
+      top: 0;
+      left: 20%;
+      width: 80%;
+      background-color: #fff; /* Add a background color if needed */
+      z-index: 999; /* Add a higher z-index to ensure it stays on top of other elements */
+      padding: 10px;
+  }
+
+  .styled-table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .styled-table th,
+  .styled-table td{
+    border: 2px solid rgb(219, 219, 219);
+    padding: 4px;
+    text-align: center;
+  }
+
+  .styled-table tbody tr:nth-child(even){
+    background-color: rgb(218, 218, 218);
+  }
+
+  .styled-table tbody tr:hover{
+    background-color: rgb(92, 155, 152);
+  }
+</style>
+
+<div class="container bg-white">
+  <div class="row my-4">
+    <div class="col-md-4">
+      <div class="border p-3">
+        <h3 class="bg-dark" style="border-radius: 20px 0 20px; display: flex; justify-content: center; color: rgb(255, 255, 255); font-size: 30px">Add New Product</h3>
+
+        <hr>
+
+        <form method="post" action="{% url 'new-product' %}">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            <label for="id_code" class="form-label">Code</label>
+            <input type="text" name="code" class="form-control" id="id_description" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="id_name" class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" id="id_name" aria-describedby="emailHelp" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="id_type" class="form-label">Primary Material</label>
+            <input type="text" name="type" class="form-control" id="id_description" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="id_description" class="form-label">Description</label>
+            <input type="text" name="description" class="form-control" id="id_description" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="id_quantity" class="form-label">Quantity</label>
+            <input type="text" name="quantity" class="form-control" id="id_quantity" required>
+          </div>
+
+          <input class="btn btn-success btn-block" type="submit" value="Add to Products" required>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <table class="table bg-white styled-table">
+        <thead class="thead-dark rounded-left">
+          <div id="wrap">
+            <a href="{% url 'export_products' %}" class="btn-slide2">
+                <span class="circle2"><i class="fa fa-download fa-sm"></i></span>
+                <span class="title2">Download</span>
+                <span class="title-hover2">Click here</span>
+            </a>
+        </div>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ product.code }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.type }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>
+              <a class="btn btn-info btn-sm" href="{% url 'product-update' product.id %}" title="Edit Product Details"><i class="bi bi-vector-pen"></i></a>
+              <a class="btn btn-danger btn-sm" href="{% url 'product-delete' product.id %}" title="Delete Product"><svg xmlns="http://www.w3.org/2000/svg" 
+                width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5
+                 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2
+                  2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59
+                   0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487
+                    1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1
+                     .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5
+                      0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg></a>
+              </td>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

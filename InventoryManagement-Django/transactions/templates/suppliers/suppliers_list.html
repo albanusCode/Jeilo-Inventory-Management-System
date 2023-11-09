@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+
+{% block title %} Suppliers List {% endblock title %}
+
+
+{% block content %}
+    
+    <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+        <div class="col-md-8" style="font-size: 30px; display:flex; font-style: bold;">Suppliers List</div>
+        <a class="btn btn-success" href="{% url 'new-supplier' %}" style="float:right;">Add New Supplier</a> 
+     
+    </div>
+
+    <br>
+
+    <table class="table table-css table-hover table-bordered">
+        
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th width="25%">Name</th>
+                <th width="20%">Contact</th>
+                <th width="30%">Actions</th>
+            </tr>
+        </thead>
+
+{% if object_list %}
+
+        <tbody>
+            {% for supplier in object_list %}
+            <tr>
+                <td>
+                    <p> <a href="{% url 'supplier' supplier.name %}">{{ supplier.name }}</a> </p>
+                </td>
+                <td class="align-middle"> {{ supplier.phone }} </td>
+                <td class="align-middle">
+                    <div class="align-middle">
+                        <a href="{% url 'edit-supplier' supplier.pk %}" class="btn btn-info btn-sm" title="Edit Supplier Details"><i class="bi bi-vector-pen"></i></a>
+                        <a href="{% url 'delete-supplier' supplier.pk %}" class="btn btn-danger btn-sm" title="Delete Supplier"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg></a>
+                    </div>
+                </td>              
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    <div class="align-middle">
+        {% if is_paginated %}
+
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% else %}
+
+        <tbody></tbody>   
+    </table><!-- Log on to codeastro.com for more projects -->
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+
+{% endif %}
+
+
+{% endblock content %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {{ supplier.name }}'s profile
+{% endblock %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+            <div class="media-body">
+                <h2 style="color:#575757;" class="account-heading">&nbsp;{{ supplier.name }}</h2>
+                <a href="{% url 'edit-supplier' pk=supplier.pk %}" class="btn btn-info" style="float: right;"><i class="bi bi-vector-pen"></i></a>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="fal">
+                            <b>PHONE: &nbsp; &nbsp;&nbsp; :</b> {{ supplier.phone }} <br>
+                            <b>KRA &nbsp; &nbsp;&nbsp; :</b> {{ supplier.kra }} <br>
+                            <b>EMAIL: &nbsp;&nbsp;&nbsp;&nbsp; :</b> {{ supplier.email }} <br>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="fal">
+                            <b>ADDRESS/LOCATION:</b> <br> {{ supplier.address|linebreaks }}
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-4">
+                    <p class="fal">
+                        <button class="btn btn-secondary" data-toggle="modal" data-target="#quotationInquiryModal">Quotation Inquiry</button>
+                        <!-- Quotations Inquiry Modal -->
+                        <div class="modal fade" id="quotationInquiryModal" tabindex="-1" role="dialog" aria-labelledby="quotationInquiryModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="quotationInquiryModalLabel">Quotation Inquiry</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'supplier-send-inquiry' pk=supplier.pk %}" method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="supplier_pk" value="{{ supplier.pk }}">
+                                            <div class="form-group">
+                                                <label for="message">Message:</label>
+                                                <textarea class="form-control" id="message" name="message" rows="2" required></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="file">Upload Requisition Form:</label>
+                                                <input type="file" class="form-control" id="file" name="file">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Send Inquiry</button>
+                                        </form>
+                                        {% if success_message %}
+                                        <p>{{ success_message }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                    </div>
+                    </div>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <table class="table table-css table-hover table-bordered">
+                        <thead class="thead-dark align-middle">
+                            <tr>
+                                <th width="25%">Materials</th>
+                                <th width="20%">Price</th>
+                                <th width="25%">Action
+                                    <div style="float:right;">
+                                        <button class="btn btn-info" data-toggle="modal" data-target="#addMaterialModal">Add Materials</button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="material-table-body">
+                            {% for material in materials %}
+                                <tr>
+                                    <td>{{ material.name }}</td>
+                                    <td>{{ material.price }}</td>
+                                    <td class="align-middle">
+                                        <form action="{% url 'remove-supplier-material' material.pk %}" method="post" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg></button>
+                                        </form>
+                                        <a href="{% url 'update-supplier-material' material.pk %}" class="btn btn-info btn-sm"><i class="bi bi-vector-pen"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Material form modal -->
+                <div class="modal fade" id="addMaterialModal" tabindex="-1" role="dialog" aria-labelledby="addMaterialModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addMaterialModalLabel">Add Material</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" action="{% url 'supplier' supplier.name %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="id_name">Material:</label>
+                                        <input type="text" id="id_name" name="name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id_price">Price:</label>
+                                        <input type="text" id="id_price" name="price" class="form-control">
+                                    </div>
+                                    {% if supplier.id %}
+                                        <input type="hidden" name="supplier_id" value="{{ supplier.id }}">
+                                    {% elif supplier.slug %}
+                                        <input type="hidden" name="supplier_slug" value="{{ supplier.slug }}">
+                                    {% endif %}
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+        <table class="table table-css table-hover table-bordered">
+            <br>
+            <thead class="thead-dark align-middle">
+                <tr>
+                    <th width="10%">Bill No.</th>
+                    <th width="15%">Stocks</th>
+                    <th width="15%">Quantity</th>
+                    <th width="15%">Price KES</th>
+                    <th width="15%">Purchase Date</th>
+                    <th width="30%">Actions</th>
+                </tr>
+            </thead>
+          
+            <tbody>
+                {% for purchase in bills %}
+                <tr>
+                    <td class="align-middle"> <p>{{ purchase.billno }}</p> </td>
+                    <td class="align-middle">{% for item in purchase.get_items_list %} {{ item.material }} <br> {% endfor %}</td>
+                    <td class="align-middle">{% for item in purchase.get_items_list %} {{ item.quantity }} <br> {% endfor %}</td>     
+                    <td class="align-middle">{{ purchase.get_total_price }}</td>
+                    <td class="align-middle">{{ purchase.time.date }}</td>
+                    <td class="align-middle">
+                        <a href="{% url 'purchase-bill' purchase.billno %}" class="btn btn-secondary"><i class="bi bi-eye-fill"></i></a>
+                        <a href="{% url 'delete-purchase' purchase.pk %}" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
